@@ -29,7 +29,6 @@ export default {
 
 <style lang="scss">
 @import './assets/css/reset';
-@import './assets/css/common';
 
 .page-loader {
     display: block;
