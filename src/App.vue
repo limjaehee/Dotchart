@@ -1,18 +1,13 @@
 <template>
-  <div id="app">
-    <!-- page-loader-->
-    <div class="page-loader" v-if="loader">
-      <div class="page-loader__item">Loading...</div>
-    </div>
-    <!-- end page-loader -->
-
+  <div id="app" class="app">
     <!-- skip-nav -->
     <div class="skip-nav">
       <a href="#contents" class="skip-nav__link">본문 바로가기</a>
     </div>
     <!-- end skip-nav -->
-
-    <router-view></router-view>
+	<transition :name="transitionName">
+		<router-view></router-view>
+	</transition>
   </div>
 </template>
 
@@ -21,66 +16,24 @@ export default {
     name: 'app',
     data () {
 		return {
-			loader: false
+			transitionName: ""
 		}
-    }
+    },
+	watch: { 
+		//페이지 전환효과
+		$route(to, from) { 
+			if(to.meta.page == null || from.meta.page == null){ 
+				this.transitionName = "fade"; 
+			}else{ 
+				this.transitionName = to.meta.page > from.meta.page ? "next" : "prev"; 
+			} 
+		} 
+	}
 }
 </script>
 
 <style lang="scss">
 @import './assets/css/reset';
-
-.page-loader {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: #fefefe;
-    z-index: 10000;
-
-	&__item {
-		width: 50px;
-		height: 50px;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		margin: -25px 0 0 -25px;
-		font-size: 10px;
-		text-indent: -12345px;
-		border-top: 1px solid rgba(0,0,0, 0.08);
-		border-right: 1px solid rgba(0,0,0, 0.08);
-		border-bottom: 1px solid rgba(0,0,0, 0.08);
-		border-left: 1px solid rgba(0,0,0, 0.5);
-		-webkit-border-radius: 50%;
-		-moz-border-radius: 50%;
-		border-radius: 50%;
-		-webkit-animation: spinner 700ms infinite linear;
-		-moz-animation: spinner 700ms infinite linear;
-		-ms-animation: spinner 700ms infinite linear;
-		-o-animation: spinner 700ms infinite linear;
-		animation: spinner 700ms infinite linear;
-		z-index: 10001;
-	}
-}
-
-@keyframes spinner {
-	0% {
-		-webkit-transform: rotate(0deg);
-		-moz-transform: rotate(0deg);
-		-ms-transform: rotate(0deg);
-		-o-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		-moz-transform: rotate(360deg);
-		-ms-transform: rotate(360deg);
-		-o-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
-}
 
 .skip-nav {
 	&__link {
@@ -90,5 +43,70 @@ export default {
 		height: 0;
 	}
 }
+
+.app { 
+	min-height: 100%; 
+	display: grid; 
+	grid-template: "main"; 
+	flex: 1; 
+	background-color: white; 
+	position: relative; 
+	z-index: 0; 
+	overflow-x: hidden; 
+
+	& > * {
+		grid-area: main; 
+		background-color: white;
+		position: relative;
+	}
+
+	& > &:first-child {
+		z-index: 1;
+	}
+} 
+
+/* 전환효과 (Slide) */ 
+.next-leave-to { animation: leaveToLeft 500ms both cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 0; } 
+.next-enter-to { animation: enterFromRight 500ms both cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 1; } 
+.prev-leave-to { animation: leaveToRight 500ms both cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 1; } 
+.prev-enter-to { animation: enterFromLeft 500ms both cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 0; } 
+
+@keyframes leaveToLeft { 
+  from { transform: translateX(0); } 
+  to { transform: translateX(-25%); filter: brightness(0.5); } 
+} 
+
+@keyframes enterFromLeft { 
+  from { transform: translateX(-25%); filter: brightness(0.5); } 
+  to { transform: translateX(0); } 
+} 
+
+@keyframes leaveToRight { 
+  from { transform: translateX(0); } 
+  to { transform: translateX(100%); } 
+} 
+
+@keyframes enterFromRight { 
+  from { transform: translateX(100%); } 
+  to { transform: translateX(0); } 
+} 
+
+/* 전환효과 (Up) */ 
+.up-leave-to { animation: leaveToLeft 500ms both cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 0; } 
+.up-enter-to { animation: enterFromRight 500ms both cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 1; } 
+
+@keyframes leaveToLeft { 
+  from { transform: translateX(0); } 
+  to { transform: translateX(-25%); filter: brightness(0.5); } 
+} 
+
+@keyframes enterFromLeft { 
+  from { transform: translateX(-25%); filter: brightness(0.5); } 
+  to { transform: translateX(0); } 
+} 
+
+/* 전환효과 (Fade) */ 
+.fade-enter-active, .fade-leave-active { transition: opacity .8s; } 
+.fade-enter, .fade-leave-to { opacity: 0; }
 
 </style>

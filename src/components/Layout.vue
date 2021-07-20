@@ -50,6 +50,11 @@ export default {
 
 <style lang="scss">
 
+.layout {
+    display: flex; 
+    flex-direction: column;
+}
+
 .header {
     position: fixed;
     top: 0;

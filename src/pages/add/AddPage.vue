@@ -1,7 +1,7 @@
 <template>
     <Layout :isFooter="false">
-        <router-link to="/AddPage">
-            main
+       <router-link to="/">
+            add
         </router-link>
     </Layout>
 </template>

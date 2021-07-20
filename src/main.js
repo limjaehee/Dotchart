@@ -10,7 +10,7 @@ import { store } from "./store";
 
 //router
 import VueRouter from 'vue-router';
-import { MainPage } from './pages';
+import { MainPage, AddPage } from './pages';
 
 //components
 import { Layout } from './components'
@@ -21,7 +21,13 @@ Vue.use(VueRouter); // router 기능 확장 선언
 const routes = [
 	{
 		path: '/',
-		component: MainPage
+		component: MainPage,
+		meta: { page: 1 },
+	},
+	{
+		path: '/AddPage',
+		component: AddPage,
+		meta: { page: 2 },
 	},
 ];
 
